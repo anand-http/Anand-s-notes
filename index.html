@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anand`s Notes</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+        integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="icon" href="notes.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            background-color: rgb(237, 237, 237);
+            flex-direction: column;
+        }
+
+        .heading>h1 {
+            margin: 0;
+
+        }
+
+        .heading {
+            background-color: yellow;
+            padding: 20px;
+            position: relative;
+        }
+
+        .addnotes>button {
+
+            border: none;
+            outline: none;
+            padding: 15px;
+            border-radius: 7px;
+            background-color: #FFFF00;
+        }
+
+        .addnotes {
+
+            margin: 15px auto;
+            width: auto;
+
+        }
+
+        .notes {
+
+            border-radius: 10px;
+            width: 100%;
+            height: 200px;
+            background-color: white;
+            position: relative;
+        }
+
+        .operation>button {
+            border: none;
+            outline: none;
+            padding: 9px;
+            border-radius: 50%;
+            margin: 5px;
+
+
+        }
+
+        .operation {
+            display: flex;
+            align-items: end;
+            justify-content: end;
+        }
+
+        .operation>button:first-child {
+            background-color: #2cb276;
+
+        }
+
+        .operation>button:last-child {
+            background-color: #ef5634;
+        }
+
+        .operation>button:hover {
+            background-color: white;
+        }
+
+        textarea {
+            border: none;
+            outline: none;
+            resize: none;
+            width: 95%;
+            height: 75%;
+            font-size: 18px;
+        }
+
+        .notesContainer {
+            display: grid;
+            grid-template-columns: 350px 350px 350px;
+            padding: 20px;
+            justify-content: space-around ;
+            row-gap: 50px;
+            column-gap: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media screen and (max-width:1164px) {
+            .notesContainer {
+
+                grid-template-columns: 400px 400px;
+
+
+            }
+
+        }
+
+        @media screen and (max-width:890px) {
+            .notesContainer {
+
+                grid-template-columns: 300px;
+
+
+            }
+
+            .notes {
+                width: 80%;
+                margin: 50px auto;
+
+
+            }
+
+
+
+
+        }
+
+        #add:hover {
+            background-color: rgb(45, 192, 45);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="heading">
+            <h1> <i class="fas fa-sticky-note"></i> Anand Notes</h1>
+        </div>
+
+
+        <div class="addnotes">
+            <button id="add">
+
+                <span> ADD NOTES</span>
+            </button>
+        </div>
+
+        <div class="notesContainer">
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        const addNote = document.getElementById('add');
+
+        const updateLSData = () => {
+            const textareaData = document.querySelectorAll('textarea');
+            const notes = [];
+
+            textareaData.forEach((note) => {
+                return notes.push(note.value);
+            })
+
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+
+
+        const addNewNotes = (text = '') => {
+
+            const note = document.createElement('div');
+            note.classList.add('notes');
+
+            const htmlData = `
+              <div class="operation">
+                <button class="edit"><i class="far fa-edit"></i></button>
+                <button class="delete"><i class="fa fa-trash"></i></button>
+                
+                </div>
+
+                <div class="write ${text ? "" : "hidden"}">
+                    
+                </div> 
+                <textarea name="text" class="${text ? "hidden" : ""}"></textarea>`;
+
+
+            note.insertAdjacentHTML('beforeend', htmlData);
+
+
+
+            document.querySelector('.notesContainer').appendChild(note);
+
+
+            const editbtn = note.querySelector('.edit');
+            const dltbtn = note.querySelector('.delete');
+            const textarea = note.querySelector('textarea');
+            const main = note.querySelector('.write');
+
+
+            dltbtn.addEventListener('click', () => {
+                note.remove();
+                updateLSData();
+            });
+
+            textarea.value = text;
+            main.innerHTML = text;
+
+
+            editbtn.addEventListener("click", () => {
+                main.classList.toggle('hidden');
+                textarea.classList.toggle('hidden');
+            })
+
+            textarea.addEventListener("change", (event) => {
+                const value = event.target.value;
+                console.log(value);
+                main.innerHTML = value;
+
+                updateLSData();
+            })
+
+        }
+
+        const notes = JSON.parse(localStorage.getItem('notes'));
+
+        if (notes) {
+            notes.forEach((note) =>
+                addNewNotes(note)
+            )
+        }
+
+
+        addNote.addEventListener("click", () => {
+            addNewNotes()
+        });
+
+
+
+    </script>
+</body>
+
+</html>
